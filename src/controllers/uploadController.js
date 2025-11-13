@@ -1,22 +1,24 @@
-const cloudinary = require('../config/cloudinary');
-const fs = require('fs');
+const { uploadToCloudinary } = require('../services/UploadService');
+const Upload = require('../models/Upload');
 
 exports.uploadImage = async (req, res) => {
   try {
-    const fileBuffer = req.file.buffer; 
-    const base64String = `data:${req.file.mimetype};base64,${fileBuffer.toString('base64')}`;
+    if (!req.file) {
+      return res.status(400).json({ message: 'Tidak ada file yang diupload' });
+    }
 
-    const result = await cloudinary.uploader.upload(base64String, {
-      folder: 'eventease',
-    });
+    const result = await uploadToCloudinary(req.file.buffer, req.file.mimetype);
+    const uploadData = new Upload(result.secure_url, result.public_id);
 
-    res.json({
-      message: 'Upload berhasil',
-      url: result.secure_url,
-      public_id: result.public_id,
+    res.status(200).json({
+      message: 'Upload berhasil ✅',
+      data: uploadData,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error upload:', error);
+    res.status(500).json({
+      message: 'Gagal upload gambar',
+      error: error.message,
+    });
   }
 };
-
