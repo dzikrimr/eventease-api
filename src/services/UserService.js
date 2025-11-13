@@ -30,6 +30,36 @@ const UserService = {
     const token = jwt.sign({ id: user.id }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
     return { user, token };
   },
+
+  async updateUser(id, { name, email, profile_picture }) {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User tidak ditemukan');
+    
+    if (email && email !== user.email) {
+      const existingUser = await User.findByEmail(email);
+      if (existingUser) throw new Error('Email sudah terdaftar');
+    }
+    
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (profile_picture) updateData.profile_picture = profile_picture;
+
+    return User.update(id, updateData);
+  },
+
+  async getUserById(id) {
+    
+    const user = await User.findById(id);
+    if (!user) throw new Error('User tidak ditemukan');
+    return user;
+  },
+
+  async deleteUser(id) {
+    const user = await User.findById(id);
+    if (!user) throw new Error('User tidak ditemukan');
+    return User.remove(id);
+  }
 };
 
 module.exports = UserService;
