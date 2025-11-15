@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { jwt: jwtConfig } = require('../config/env');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
 const UserService = {
   async register({ name, email, password, profile_picture }) {
@@ -31,10 +32,12 @@ const UserService = {
     return { user, token };
   },
 
-  async updateUser(id, { name, email, profile_picture }) {
+async updateUser(id, userData, file) {
     const user = await User.findById(id);
     if (!user) throw new Error('User tidak ditemukan');
-    
+
+    const { name, email } = userData; 
+
     if (email && email !== user.email) {
       const existingUser = await User.findByEmail(email);
       if (existingUser) throw new Error('Email sudah terdaftar');
@@ -43,8 +46,11 @@ const UserService = {
     const updateData = {};
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (profile_picture) updateData.profile_picture = profile_picture;
 
+    if (file) {
+      const uploadResult = await uploadToCloudinary(file.buffer);
+      updateData.profile_picture = uploadResult.secure_url;
+    }
     return User.update(id, updateData);
   },
 

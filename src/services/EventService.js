@@ -1,13 +1,33 @@
 const Event = require('../models/Event');
 const EventParticipant = require('../models/EventParticipant');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
 const EventService = {
 
-  async createEvent(eventData, creator_id) {
-    if (!eventData.title || !eventData.description || !eventData.date || !eventData.location || !eventData.capacity) {
+  async createEvent(eventData, creator_id, file) {
+
+    const { title, description, date, location, capacity } = eventData;
+    
+    if (!title || !description || !date || !location || !capacity) {
       throw new Error('Semua field wajib diisi');
     }
-    return Event.create({ ...eventData, creator_id });
+    
+    if (!file) {
+      throw new Error('Gambar event wajib diupload');
+    }
+
+    const uploadResult = await uploadToCloudinary(file.buffer);
+    const imageUrl = uploadResult.secure_url;
+
+    return Event.create({
+      title,
+      description,
+      date,
+      location,
+      capacity,
+      image: imageUrl, 
+      creator_id
+    });
   },
 
   async getAllEvents() {

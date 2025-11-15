@@ -29,12 +29,10 @@ const UserController = {
     }
   },
 
-  async updateProfile(req, res) {
+ async updateProfile(req, res) {
     try {
-      const { id } = req.user; // Ambil id dari user yang terotentikasi
-      const { name, email, profile_picture } = req.body;
-      
-      const updatedUser = await UserService.updateUser(id, { name, email, profile_picture });
+      const { id } = req.user; 
+      const updatedUser = await UserService.updateUser(id, req.body, req.file);
       res.status(200).json({ message: 'Profil berhasil diperbarui', data: updatedUser });
     } catch (err) {
       res.status(400).json({ error: err.message });
