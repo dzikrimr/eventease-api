@@ -90,16 +90,6 @@ const EventController = {
       res.status(500).json({ error: err.message });
     }
   },
-
-  // POST /api/events
-  async createEvent(req, res) {
-    try {
-      const event = await EventService.createEvent(req.body, req.user.id, req.file);
-      res.status(201).json({ message: 'Event berhasil dibuat', data: event });
-    } catch (err) {
-      res.status(400).json({ error: err.message });
-    }
-  }
 };
 
 module.exports = EventController;

@@ -4,20 +4,13 @@ const { uploadToCloudinary } = require('../config/cloudinary');
 
 const EventService = {
 
-  async createEvent(eventData, creator_id, file) {
-
-    const { title, description, date, location, capacity } = eventData;
+  async createEvent(eventData, creator_id) {
+    // eventData adalah req.body
+    const { title, description, date, location, capacity, image } = eventData;
     
-    if (!title || !description || !date || !location || !capacity) {
-      throw new Error('Semua field wajib diisi');
+    if (!title || !description || !date || !location || !capacity || !image) {
+      throw new Error('Semua field wajib diisi (termasuk URL gambar)');
     }
-    
-    if (!file) {
-      throw new Error('Gambar event wajib diupload');
-    }
-
-    const uploadResult = await uploadToCloudinary(file.buffer);
-    const imageUrl = uploadResult.secure_url;
 
     return Event.create({
       title,
@@ -25,7 +18,7 @@ const EventService = {
       date,
       location,
       capacity,
-      image: imageUrl, 
+      image: image,
       creator_id
     });
   },

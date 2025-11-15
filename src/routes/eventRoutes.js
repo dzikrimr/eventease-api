@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const EventController = require('../controllers/EventController');
 const authMiddleware = require('../middlewares/AuthMiddleware');
-const upload = require('../middlewares/UploadMiddleware');
 
 // === Rute Event ===
 
@@ -40,6 +39,6 @@ router.post('/:id/join', authMiddleware, EventController.joinEvent);
 router.delete('/:id/leave', authMiddleware, EventController.leaveEvent);
 
 // // POST /api/events (Create Event with Image Upload)
-router.post('/', authMiddleware, upload.single('image'), EventController.createEvent);
+router.post('/', authMiddleware, EventController.createEvent);
 
 module.exports = router;
