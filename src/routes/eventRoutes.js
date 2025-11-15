@@ -38,7 +38,4 @@ router.post('/:id/join', authMiddleware, EventController.joinEvent);
 // DELETE /api/events/:id/leave (Leave Event)
 router.delete('/:id/leave', authMiddleware, EventController.leaveEvent);
 
-// // POST /api/events (Create Event with Image Upload)
-router.post('/', authMiddleware, EventController.createEvent);
-
 module.exports = router;

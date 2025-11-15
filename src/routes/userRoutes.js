@@ -10,6 +10,5 @@ router.get('/profile', authMiddleware, UserController.getProfile);
 router.put('/profile', authMiddleware, UserController.updateProfile);
 router.delete('/profile', authMiddleware, UserController.deleteProfile);
 router.get('/:id', UserController.getUserById);
-router.put('/profile', authMiddleware, UserController.updateProfile);
 
 module.exports = router;
