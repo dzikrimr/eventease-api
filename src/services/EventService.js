@@ -1,6 +1,5 @@
 const Event = require('../models/Event');
 const EventParticipant = require('../models/EventParticipant');
-const { uploadToCloudinary } = require('../config/cloudinary');
 
 const EventService = {
 
@@ -36,7 +35,6 @@ const EventService = {
   },
   
 
-  
   async updateEvent(eventId, userId, eventData) {
     const event = await Event.findById(eventId);
     if (!event) throw new Error('Event tidak ditemukan');
